@@ -1,0 +1,27 @@
+name: note-validation
+
+on:
+  push:
+    paths:
+      - 'notes/**/*.md'
+      - 'scripts/**/*.mjs'
+      - '.github/workflows/note-validation.yml'
+  pull_request:
+    paths:
+      - 'notes/**/*.md'
+      - 'scripts/**/*.mjs'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate note templates and TODO format
+        run: node scripts/validate-notes.mjs

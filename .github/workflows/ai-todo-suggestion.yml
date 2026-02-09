@@ -1,0 +1,55 @@
+name: ai-todo-suggestion
+
+on:
+  workflow_dispatch:
+    inputs:
+      note_path:
+        description: 'Path to note file (e.g., notes/books/deep-work-notes.md)'
+        required: true
+        type: string
+      todo_text:
+        description: 'Specific TODO text to analyze'
+        required: false
+        type: string
+      model:
+        description: 'GitHub Models model id'
+        required: false
+        default: 'openai/gpt-4.1-mini'
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  suggest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate AI suggestion draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_MODELS_MODEL: ${{ inputs.model }}
+        run: |
+          node scripts/generate-ai-suggestion.mjs \
+            --note "${{ inputs.note_path }}" \
+            --todo "${{ inputs.todo_text }}"
+
+      - name: Create pull request with suggestion draft
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore: add AI suggestion draft for TODO'
+          title: 'AI suggestion draft for ${{ inputs.note_path }}'
+          body: |
+            This PR contains an AI-generated suggestion draft.
+            - Human review is required before merge.
+            - No task status was auto-updated.
+          branch: ai-suggestion/${{ github.run_id }}
+          delete-branch: true

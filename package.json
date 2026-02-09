@@ -1,0 +1,15 @@
+{
+  "name": "notes-engineering-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "new:project": "node scripts/new-project.mjs",
+    "sync:backlog": "node scripts/sync-backlog.mjs",
+    "weekly:focus": "node scripts/weekly-focus.mjs",
+    "review:check": "node scripts/review-check.mjs",
+    "log:evolution": "node scripts/append-evolution.mjs",
+    "validate:notes": "node scripts/validate-notes.mjs",
+    "claude:daily-proposal": "node scripts/daily-claude-proposal.mjs"
+  }
+}
