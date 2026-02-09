@@ -33,6 +33,13 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Debug inputs and paths
+        run: |
+          echo "note_path=${{ inputs.note_path }}"
+          echo "todo_text=${{ inputs.todo_text }}"
+          test -f "${{ inputs.note_path }}" || (echo "Input note_path not found in repo" && exit 1)
+          ls -la scripts
+
       - name: Generate AI suggestion draft
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,9 +49,15 @@ jobs:
             --note "${{ inputs.note_path }}" \
             --todo "${{ inputs.todo_text }}"
 
+      - name: Debug generated suggestion files
+        run: |
+          ls -la system/logs/ai-suggestions || true
+          git status --short
+
       - name: Create pull request with suggestion draft
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: 'chore: add AI suggestion draft for TODO'
           title: 'AI suggestion draft for ${{ inputs.note_path }}'
           body: |
@@ -52,4 +65,7 @@ jobs:
             - Human review is required before merge.
             - No task status was auto-updated.
           branch: ai-suggestion/${{ github.run_id }}
+          base: main
+          add-paths: |
+            system/logs/ai-suggestions/*.md
           delete-branch: true
