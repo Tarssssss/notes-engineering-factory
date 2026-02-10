@@ -17,10 +17,10 @@ Initialized MVP scaffolding for engineering notes and AI suggestion flow.
 
 ## Test Results
 
-- Unit/Automation: Pending first workflow run.
-- Manual Critical Path: Pending first end-to-end dry run.
+- Unit/Automation: ai-todo-suggestion workflow ran successfully on 2026-02-10.
+- Manual Critical Path: input -> workflow -> PR path verified.
 - Regression: N/A for initial setup.
 
 ## Gate Decision
 
-- Conditional Go
+- Go
